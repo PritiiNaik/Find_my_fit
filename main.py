@@ -1,15 +1,31 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, redirect, url_for, session
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
 import os
 import base64
-from PIL import Image
 from rembg import remove
-
-# Import your custom functions
 from verify import overlay_cloth_on_model
 from verify2 import overlay_lower_body_garment
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Needed for session management
+
+# Database config
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # Using SQLite for simplicity
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(200))  # Hashed password
+
+# One-time: create DB (or use Flask shell)
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -17,43 +33,64 @@ def index():
 
 @app.route('/homw')
 def homw():
-    return render_template('homw.html')
+    if 'user_id' in session:
+        return render_template('homw.html')
+    return redirect(url_for('login'))
 
 @app.route('/login')
 def login():
     return render_template('login.html')
 
+@app.route('/register', methods=['POST'])
+def register():
+    name = request.form['name']
+    email = request.form['email']
+    password = request.form['password']
 
-# Directory setup
+    # Check if email already exists
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({'error': 'Email already registered!'}), 409
+
+    hashed_password = generate_password_hash(password)
+    user = User(name=name, email=email, password=hashed_password)
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({'message': 'Registered successfully!'})
+
+@app.route('/signin', methods=['POST'])
+def signin():
+    email = request.form['email']
+    password = request.form['password']
+
+    user = User.query.filter_by(email=email).first()
+    if user and check_password_hash(user.password, password):
+        session['user_id'] = user.id
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Invalid credentials'})
+
+
+# Upload & Try-on logic
 UPLOAD_FOLDER = 'uploads'
 STATIC_FOLDER = os.path.join('static', 'results')
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-if not os.path.exists(STATIC_FOLDER):
-    os.makedirs(STATIC_FOLDER)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(STATIC_FOLDER, exist_ok=True)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['STATIC_FOLDER'] = STATIC_FOLDER
 
-# this function is to remove background
-
 def remove_background(input_path, output_path):
     try:
-        # Read the image as bytes
         with open(input_path, 'rb') as input_file:
             input_bytes = input_file.read()
-
-        # Remove the background
         output_bytes = remove(input_bytes)
-
-        # Save the output bytes to an image file
         with open(output_path, 'wb') as output_file:
             output_file.write(output_bytes)
-            
-        print("Background removal successful.")
         return True
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Background removal error: {e}")
         return False
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -69,36 +106,31 @@ def upload_file():
 
             model_image_path = os.path.join(app.config['UPLOAD_FOLDER'], model_filename)
             clothes_image_path = os.path.join(app.config['UPLOAD_FOLDER'], clothes_filename)
-            clothes_no_bg_path = os.path.join(app.config['UPLOAD_FOLDER'], 'no_bg_' + clothes_filename)  # Path for the cloth image after background removal
+            clothes_no_bg_path = os.path.join(app.config['UPLOAD_FOLDER'], 'no_bg_' + clothes_filename)
             output_filename = 'output_' + model_filename
             output_image_path = os.path.join(app.config['STATIC_FOLDER'], output_filename)
 
             model_image.save(model_image_path)
             clothes_image.save(clothes_image_path)
 
-            # Remove background from clothes image
             if not remove_background(clothes_image_path, clothes_no_bg_path):
-                return jsonify({'error': 'Failed to remove background from clothes image'})
+                return jsonify({'error': 'Background removal failed'})
 
-            # Decide which function to use based on the garment type
             if garment_type == 'lower_body':
                 output_path, message = overlay_lower_body_garment(model_image_path, clothes_no_bg_path, output_image_path)
             elif garment_type == 'upper_body':
                 output_path, message = overlay_cloth_on_model(model_image_path, clothes_no_bg_path, output_image_path)
             else:
-                return jsonify({'error': 'Invalid garment type specified'})
+                return jsonify({'error': 'Invalid garment type'})
 
             if output_path:
-                # Encode the output image to base64 for displaying directly in the HTML
                 with open(output_image_path, "rb") as img_file:
                     img_data = base64.b64encode(img_file.read()).decode('utf-8')
                 return render_template('result.html', img_data=img_data)
             else:
                 return jsonify({'error': message})
-        else:
-            return jsonify({'error': 'Files not provided or invalid file names'})
 
     return render_template('upload.html')
 
 if __name__ == '__main__':
-    app.run(debug=True,port=8080)
+    app.run(debug=True, port=5002)
