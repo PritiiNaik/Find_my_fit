@@ -59,3 +59,5 @@ Welcome to the Virtual Try-On Clothes project! This project allows users to uplo
 
 - This project was created by Team Syntax Sensations.
 - Virtual clothes images were sourced from google.
+# Find_my_fit
+database connectivity
