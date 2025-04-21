@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,11 +13,10 @@
         </video>
         <header class="header">
             <div class="logo">
-                <a href="#"><h2>StyleSpectrum</h2></a>
+                <a href="#"><h2>Find my Fit</h2></a>
             </div>
             <nav class="nav">
                 <a href="#">Home</a>
-                <a href="#">Products</a>
                 <a href="/login">Log in</a>
             </nav>
             
@@ -40,4 +39,138 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.4.1/glide.min.js"></script>
   <script src="static\results\js\slider.js"></script>
   <script src="static\results\js\index.js"></script>
-</html>          
+</html>           -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Find My Fit</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+      /* background: url("{{ url_for('static', filename='results/shopping_bg.jpg') }}") no-repeat center center/cover; */
+      background: url("static/results/backgroo.avif") no-repeat right center;
+      background-size: 40%;
+      background-color: rgb(198, 118, 163);
+      height: 100vh;
+      width: 100%;
+      position: relative;
+      color: white;
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.5);
+      height: 100%;
+      width: 100%;
+      padding: 20px 60px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo h2 {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .nav a {
+      margin-left: 30px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+      border: 2px solid #fff;
+      padding: 8px 16px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .nav a:hover {
+      background-color: #fff;
+      color: #000;
+    }
+
+    .intro-text {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      text-align: left;
+      padding: 0 20px;
+    }
+
+    .intro-text p {
+      font-size: 35px;
+      font-weight: 300;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav {
+        margin-top: 10px;
+      }
+
+      .nav a {
+        margin-left: 0;
+        margin-right: 10px;
+        display: inline-block;
+      }
+
+      .intro-text p {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="overlay">
+      <header class="header">
+        <div class="logo">
+          <h2>Find My Fit</h2>
+        </div>
+        <nav class="nav">
+          <a href="/">Home</a>
+          <a href="/login">Login</a>
+        </nav>
+      </header>
+
+      <div class="intro-text">
+        <p>Style meets technology — Try on clothes virtually and discover your perfect fit from the comfort of your home.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
