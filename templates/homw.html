@@ -327,13 +327,12 @@
         <a href="" class="btn btn-1">Contact</a>
       </div>
       <div class="col">
-        <form action="">
-          <div>
-            <input type="email" placeholder="Email Address">
-            <a href="">Send</a>
-          </div>
-        </form>
+        <form onsubmit="sendMail(event)">
+          <input type="email" id="userEmail" placeholder="Email Address" required>
+          <input type="submit" value="Send">
+        </form>        
       </div>
+      
     </div>
   </section>
 
@@ -391,9 +390,31 @@
   </div> -->
 
 
-</body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.4.1/glide.min.js"></script>
-<script src="static\results\js\slider.js"></script>
-<script src="static\results\js\index.js"></script>
+  <!-- Your JavaScript functions and imports go here -->
+<script>
+  function sendMail(event) {
+    event.preventDefault();
 
+    const email = document.getElementById("userEmail").value.trim();
+
+    if (email === "") {
+      alert("Please enter your email.");
+      return;
+    }
+
+    const subject = encodeURIComponent("User Inquiry");
+    const body = encodeURIComponent(`Hi FindMyFit,\n\nI would like to get in touch. My email is: ${email}`);
+
+    const mailtoLink = `mailto:findmyfit@gmail.com?subject=${subject}&body=${body}`;
+
+    window.location.href = mailtoLink;
+
+  }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.4.1/glide.min.js"></script>
+<script src="static/results/js/slider.js"></script>
+<script src="static/results/js/index.js"></script>
+
+</body>
 </html>
