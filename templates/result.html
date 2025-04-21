@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom, #0077B6, #ffffff);
+            background: linear-gradient(to bottom, #fddde6, #ffffff); /* soft pink gradient */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -14,38 +14,38 @@
             height: 100vh;
             margin: 0;
         }
-
+    
         h2 {
             background: white;
-            opacity: 0.8;
+            opacity: 0.9;
             padding: 10px 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(255, 182, 193, 0.3); /* soft pink shadow */
             font-size: 28px;
             font-weight: bold;
-            color: #0077B6;
-            text-shadow: 0 0 5px #00B4DB, 0 0 10px #00B4DB;
+            color: #c94f7c; /* rose pink */
+            text-shadow: 0 0 5px #f8c2d0, 0 0 10px #f8c2d0;
             margin-bottom: 20px;
         }
-
+    
         img {
             max-width: 80%;
             max-height: 600px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(255, 182, 193, 0.3); /* soft pink image shadow */
             border-radius: 10px;
             margin-bottom: 20px;
         }
-
+    
         .link-container {
             display: flex;
             justify-content: center;
-            gap: 20px; /* Adjust the gap between anchor tags */
-            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+            gap: 20px;
+            flex-wrap: wrap;
             margin-bottom: 20px;
         }
-
+    
         a {
-            background: #0077B6;
+            background: #e68a9e; /* soft pink button */
             color: white;
             padding: 10px 20px;
             border-radius: 5px;
@@ -53,29 +53,31 @@
             font-weight: bold;
             transition: background 0.3s ease;
         }
-
+    
         a:hover {
-            background: #005f8d;
+            background: #c96c85;
         }
-
+    
         /* Responsive adjustments */
         @media (max-width: 600px) {
             .link-container {
                 flex-direction: column;
             }
+    
             a {
-                margin-bottom: 10px; /* Adds spacing between links on smaller screens */
+                margin-bottom: 10px;
             }
         }
     </style>
+    
 </head>
 <body>
     <h2>Processed Image</h2>
     <img src="data:image/png;base64,{{ img_data }}" alt="Processed Image">
     <div class="link-container">
         <a href="/upload">Upload Another</a>
-        <a href="/homw">Back To Shop</a>
-        <a href="/">Home Screen</a>
+        <a href="/homw">Home</a>
+        <!-- <a href="/homw"></a> -->
     </div>
 </body>
 </html>

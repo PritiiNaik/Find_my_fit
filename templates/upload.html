@@ -7,7 +7,7 @@
         /* Overall body styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom, #0077B6, #ffffff);
+            background: linear-gradient(to bottom, #fddde6, #ffffff); /* soft pink gradient */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -15,31 +15,31 @@
             height: 100vh;
             margin: 0;
         }
-
+    
         /* Header styling */
         h2 {
-            background: white; /* White background for the header */
-            opacity: 0.8; /* 50% transparency */
-            padding: 10px 20px; /* Padding around the text */
-            border-radius: 10px; /* Rounded corners for the background */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-            font-size: 28px; /* Increased font size */
-            font-weight: bold; /* Bold font */
-            color: #0077B6; /* Font color */
-            text-shadow: 0 0 5px #00B4DB, 0 0 10px #00B4DB; /* Glowing effect */
-            margin-bottom: 20px; /* Space between the header and the form */
+            background: white;
+            opacity: 0.9;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 182, 193, 0.3); /* soft pink shadow */
+            font-size: 28px;
+            font-weight: bold;
+            color: #c94f7c; /* soft rose pink */
+            text-shadow: 0 0 5px #f8c2d0, 0 0 10px #f8c2d0; /* glowing pink */
+            margin-bottom: 20px;
         }
-
+    
         /* Form styling */
         form {
-            background: white;
+            background: #fff0f5; /* light lavender blush */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: auto; /* Adjusts width to fit content */
+            box-shadow: 0 4px 8px rgba(255, 182, 193, 0.2);
+            width: auto;
             animation: slideIn 0.5s ease-out forwards;
         }
-
+    
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -50,27 +50,28 @@
                 transform: translateY(0);
             }
         }
-
+    
         /* Input and select styling */
         label, input, select {
             display: block;
             width: 100%;
             margin: 10px 0;
         }
-
+    
         label {
             font-weight: bold;
+            color: #a14f66;
         }
-
+    
         input[type="file"] {
             padding: 10px;
-            background: #f1f1f1;
+            background: #fff5f8;
             border-radius: 5px;
-            border: 1px solid #ddd;
+            border: 1px solid #e6b6c8;
         }
-
+    
         input[type="submit"] {
-            background: #0077B6;
+            background: #e68a9e; /* soft pink button */
             color: white;
             border: none;
             padding: 10px;
@@ -78,35 +79,36 @@
             cursor: pointer;
             transition: background 0.3s ease;
         }
-
+    
         input[type="submit"]:hover {
-            background: #005f8d;
+            background: #c96c85;
         }
-
+    
         /* Fix for file input to prevent overflow */
         .file-input-container {
             position: relative;
             width: 100%;
         }
-
+    
         input[type="file"] {
-            width: calc(100% - 90px); /* Adjust width to prevent overflow */
+            width: calc(100% - 90px);
         }
-
+    
         .file-input-label {
             position: absolute;
             right: 0;
             top: 0;
             bottom: 0;
-            width: 90px; /* Width of the "No file chosen" dialogue */
-            line-height: 2.5; /* Align text vertically */
+            width: 90px;
+            line-height: 2.5;
             text-align: center;
-            background: #f1f1f1;
-            border-left: 1px solid #ddd;
-            border-radius: 0 5px 5px 0; /* Rounded right corners */
-            overflow: hidden; /* Prevents overflow */
+            background: #fce4ec;
+            border-left: 1px solid #f8bbd0;
+            border-radius: 0 5px 5px 0;
+            overflow: hidden;
         }
     </style>
+    
 </head>
 <body>
     <h2>Upload Model and Clothes Images</h2>

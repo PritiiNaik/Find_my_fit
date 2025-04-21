@@ -1087,7 +1087,7 @@ footer .row {
 }
 
 /* All Products */
-.section .top {
+/* .section .top {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1121,7 +1121,7 @@ form span {
   .all-products .top select {
     width: 15rem;
   }
-}
+} */
 
 /* Pagination */
 .pagination {

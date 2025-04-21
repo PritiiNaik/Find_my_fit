@@ -160,3 +160,10 @@ html{
         height: 100%;
     }
 }
+
+
+.description {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 25px;
+  }
