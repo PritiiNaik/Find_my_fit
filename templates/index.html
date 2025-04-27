@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,23 +21,26 @@
     }
 
     .container {
-      /* background: url("{{ url_for('static', filename='results/shopping_bg.jpg') }}") no-repeat center center/cover; */
-      background: url("static/results/backgroo.avif") no-repeat right center;
-      background-size: 40%;
-      background-color: rgb(198, 118, 163);
+      background: linear-gradient(135deg, #c676a3, #774aa6);
+      background-image: url("static/results/backgroo.avif");
+      background-repeat: no-repeat;
+      background-position: right center;
+      background-size: 45%;
       height: 100vh;
       width: 100%;
       position: relative;
       color: white;
+      overflow: hidden;
     }
 
     .overlay {
-      background-color: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.5);
       height: 100%;
       width: 100%;
-      padding: 20px 60px;
+      padding: 30px 80px;
       display: flex;
       flex-direction: column;
+      animation: fadeIn 1s ease-in-out;
     }
 
     .header {
@@ -48,46 +50,66 @@
     }
 
     .logo h2 {
-      font-size: 60px;
+      font-size: 55px;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       color: #fff;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
     }
 
     .nav a {
-      margin-left: 30px;
+      margin-left: 20px;
       color: #fff;
       text-decoration: none;
       font-weight: 500;
-      font-size: 16px;
+      font-size: 18px;
+      padding: 10px 24px;
       border: 2px solid #fff;
-      padding: 8px 16px;
-      border-radius: 5px;
-      transition: all 0.3s ease;
+      border-radius: 30px;
+      transition: all 0.4s ease;
+      background-color: transparent;
     }
 
     .nav a:hover {
       background-color: #fff;
-      color: #000;
+      color: #774aa6;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(255,255,255,0.6);
     }
 
     .intro-text {
       flex: 1;
       display: flex;
       align-items: center;
-      justify-content: left;
+      justify-content: flex-start;
       text-align: left;
       padding: 0 20px;
+      animation: slideIn 1.2s ease forwards;
     }
 
     .intro-text p {
-      font-size: 30px;
+      font-size: 32px;
       font-weight: 300;
-      max-width: 750px;
-      line-height: 1.6;
+      max-width: 700px;
+      line-height: 1.7;
+      color: #f2f2f2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
     @media (max-width: 768px) {
+      .overlay {
+        padding: 20px 30px;
+      }
+
       .header {
         flex-direction: column;
         align-items: flex-start;
@@ -98,13 +120,23 @@
       }
 
       .nav a {
-        margin-left: 0;
-        margin-right: 10px;
+        margin: 10px 0;
         display: inline-block;
       }
 
+      .intro-text {
+        justify-content: center;
+        text-align: center;
+      }
+
       .intro-text p {
-        font-size: 22px;
+        font-size: 24px;
+        line-height: 1.5;
+      }
+
+      .container {
+        background-size: 100%;
+        background-position: center center;
       }
     }
   </style>
@@ -117,7 +149,6 @@
           <h2>Find My Fit</h2>
         </div>
         <nav class="nav">
-          <!-- <a href="/">Home</a> -->
           <a href="/login">Login</a>
         </nav>
       </header>
