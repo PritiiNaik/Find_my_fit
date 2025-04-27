@@ -117,3 +117,39 @@ if __name__ == "__main__":
     output_image_path = 'path/to/output/image.jpg'
     output_path, message = overlay_cloth_on_model(model_image_path, cloth_image_path, output_image_path)
     print(message)
+
+
+# import cv2
+# import mediapipe as mp
+
+# def is_upper_body_visible(image_path):
+#     mp_pose = mp.solutions.pose
+#     pose = mp_pose.Pose(static_image_mode=True, model_complexity=2)
+#     mp_drawing = mp.solutions.drawing_utils
+
+#     image = cv2.imread(image_path)
+#     if image is None:
+#         print("Error: Image not found.")
+#         return False
+
+#     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+#     results = pose.process(image_rgb)
+
+#     if not results.pose_landmarks:
+#         print("No pose detected.")
+#         return False
+
+#     landmarks = results.pose_landmarks.landmark
+#     left_shoulder = landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER]
+#     right_shoulder = landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER]
+#     left_hip = landmarks[mp_pose.PoseLandmark.LEFT_HIP]
+#     right_hip = landmarks[mp_pose.PoseLandmark.RIGHT_HIP]
+
+#     visibility_threshold = 0.5
+#     visible_points = [left_shoulder, right_shoulder, left_hip, right_hip]
+
+#     if all(point.visibility > visibility_threshold for point in visible_points):
+#         return True
+#     else:
+#         print("Required upper body parts not clearly visible.")
+#         return False
