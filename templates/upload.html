@@ -111,49 +111,63 @@
     
 </head>
 <body>
-    <h2>Upload Model and Clothes Images</h2>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <div class="file-input-container">
-            <label for="model_image">Model Image:</label>
-            <input type="file" name="model_image" required>
-            <!-- <span class="file-input-label">No file chosen</span> -->
-        </div>
-        <div class="file-input-container">
-            <label for="clothes_image">Clothes Image:</label>
-            <!-- <input type="file" name="clothes_image" required> -->
-            <!-- <span class="file-input-label">No file chosen</span> -->
-        </div>
-        <label for="garment_type">Select Garment Type:</label>
-        <select name="garment_type" id="garment_type" required>
-            <option value="upper_body">Upper Body</option>
-            <option value="lower_body">Lower Body</option>
-        </select>
-        <input type="submit" value="Upload Images">
-    </form>
+    <h2>Try your fit virtually</h2>
+    <!-- Only showing the relevant form part - replace your current form -->
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <div class="file-input-container">
+        <label for="model_image">
+            Model Image:
+            {% if has_model %}
+            <small style="color: green;">(You already have a model image saved)</small>
+            {% endif %}
+        </label>
+        <input type="file" name="model_image" id="model_image" {% if not has_model %}required{% endif %}>
+        <!-- <span class="file-input-label">Choose File</span> -->
+    </div>
 
+    {% if has_model %}
+    <div style="display: flex; align-items: center; margin: 10px 0;">
+        <label for="change_model" style="margin: 0;">Change my model image</label>
+        <input type="checkbox" id="change_model" name="change_model" value="1" 
+               style="margin: 0; margin-right: 4px;">  <!-- Reduced from 8px to 4px -->
+    </div>
+    {% endif %}
 
-    <!-- Add this script at the bottom of the body in upload.html -->
+    <div class="file-input-container">
+        <label for="clothes_image" id="clothes_label">Clothes Image:</label>
+        <input type="file" name="clothes_image" id="clothes_image">
+        <!-- <span class="file-input-label">Choose File</span> -->
+    </div>
+
+    <label for="garment_type">Select Garment Type:</label>
+    <select name="garment_type" id="garment_type" required>
+        <option value="upper_body">Upper Body</option>
+        <option value="lower_body">Lower Body</option>
+    </select>
+    <input type="submit" value="Upload Images">
+</form>
+
 <script>
     // Check if we have a preselected garment
     const urlParams = new URLSearchParams(window.location.search);
     const garmentPath = urlParams.get('garment');
     
     if (garmentPath) {
-      // Create a hidden input for the preselected garment
-      const hiddenInput = document.createElement('input');
-      hiddenInput.type = 'hidden';
-      hiddenInput.name = 'preselected_garment';
-      hiddenInput.value = garmentPath;
-      document.querySelector('form').appendChild(hiddenInput);
-      
-      // Update the clothes image label to show preselected image
-      const clothesLabel = document.querySelector('label[for="clothes_image"]');
-      clothesLabel.innerHTML += `<br><small>Preselected: ${garmentPath.split('/').pop()}</small>`;
-      
-      // Make clothes image upload optional since we have a preselected one
-      document.querySelector('input[name="clothes_image"]').required = false;
+        // Create a hidden input for the preselected garment
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'preselected_garment';
+        hiddenInput.value = garmentPath;
+        document.querySelector('form').appendChild(hiddenInput);
+        
+        // Update the clothes image label
+        const clothesLabel = document.getElementById('clothes_label');
+        clothesLabel.innerHTML += `<br><small style="color: #28a745;">Preselected: ${garmentPath.split('/').pop()}</small>`;
+        
+        // Make clothes image upload optional
+        document.getElementById('clothes_image').required = false;
     }
-  </script>
+</script>
 
 </body>
 </html>
