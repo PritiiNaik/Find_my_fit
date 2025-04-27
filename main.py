@@ -96,45 +96,129 @@ def remove_background(input_path, output_path):
         print(f"Background removal error: {e}")
         return False
 
+# @app.route('/upload', methods=['GET', 'POST'])
+# def upload_file():
+#     if request.method == 'POST':
+#         model_image = request.files.get('model_image')
+#         clothes_image = request.files.get('clothes_image')
+#         garment_type = request.form.get('garment_type')
+
+#         if model_image and clothes_image:
+#             model_filename = secure_filename(model_image.filename)
+#             clothes_filename = secure_filename(clothes_image.filename)
+
+#             model_image_path = os.path.join(app.config['UPLOAD_FOLDER'], model_filename)
+#             clothes_image_path = os.path.join(app.config['UPLOAD_FOLDER'], clothes_filename)
+#             clothes_no_bg_path = os.path.join(app.config['UPLOAD_FOLDER'], 'no_bg_' + clothes_filename)
+#             output_filename = 'output_' + model_filename
+#             output_image_path = os.path.join(app.config['STATIC_FOLDER'], output_filename)
+
+#             model_image.save(model_image_path)
+#             clothes_image.save(clothes_image_path)
+
+#             if not remove_background(clothes_image_path, clothes_no_bg_path):
+#                 return jsonify({'error': 'Background removal failed'})
+
+#             if garment_type == 'lower_body':
+#                 output_path, message = overlay_lower_body_garment(model_image_path, clothes_no_bg_path, output_image_path)
+#             elif garment_type == 'upper_body':
+#                 output_path, message = overlay_cloth_on_model(model_image_path, clothes_no_bg_path, output_image_path)
+#             else:
+#                 return jsonify({'error': 'Invalid garment type'})
+
+#             if output_path:
+#                 with open(output_image_path, "rb") as img_file:
+#                     img_data = base64.b64encode(img_file.read()).decode('utf-8')
+#                 return render_template('result.html', img_data=img_data)
+#             else:
+#                 return jsonify({'error': message})
+
+#     return render_template('upload.html')
+# Update the upload_file route in main.py
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         model_image = request.files.get('model_image')
         clothes_image = request.files.get('clothes_image')
         garment_type = request.form.get('garment_type')
+        preselected_garment = request.form.get('preselected_garment')
 
-        if model_image and clothes_image:
-            model_filename = secure_filename(model_image.filename)
+        # Validate model image is always required
+        if not model_image:
+            return jsonify({'error': 'Model image is required'}), 400
+
+        # Handle clothes image - either uploaded or preselected
+        if not clothes_image and not preselected_garment:
+            return jsonify({'error': 'Clothes image is required'}), 400
+
+        # Prepare file paths
+        model_filename = secure_filename(model_image.filename)
+        model_image_path = os.path.join(app.config['UPLOAD_FOLDER'], model_filename)
+        model_image.save(model_image_path)
+
+        # Handle clothes image
+        if clothes_image:
             clothes_filename = secure_filename(clothes_image.filename)
-
-            model_image_path = os.path.join(app.config['UPLOAD_FOLDER'], model_filename)
             clothes_image_path = os.path.join(app.config['UPLOAD_FOLDER'], clothes_filename)
-            clothes_no_bg_path = os.path.join(app.config['UPLOAD_FOLDER'], 'no_bg_' + clothes_filename)
-            output_filename = 'output_' + model_filename
-            output_image_path = os.path.join(app.config['STATIC_FOLDER'], output_filename)
-
-            model_image.save(model_image_path)
             clothes_image.save(clothes_image_path)
+        else:
+            # Use preselected garment
+            clothes_filename = os.path.basename(preselected_garment)
+            clothes_image_path = os.path.join(app.config['UPLOAD_FOLDER'], clothes_filename)
+            
+            # Copy preselected garment to upload folder
+            try:
+                import shutil
+                shutil.copy2(preselected_garment, clothes_image_path)
+            except Exception as e:
+                return jsonify({'error': f'Failed to use preselected garment: {str(e)}'}), 500
 
-            if not remove_background(clothes_image_path, clothes_no_bg_path):
-                return jsonify({'error': 'Background removal failed'})
+        # Process the images
+        clothes_no_bg_path = os.path.join(app.config['UPLOAD_FOLDER'], 'no_bg_' + clothes_filename)
+        output_filename = 'output_' + model_filename
+        output_image_path = os.path.join(app.config['STATIC_FOLDER'], output_filename)
 
-            if garment_type == 'lower_body':
-                output_path, message = overlay_lower_body_garment(model_image_path, clothes_no_bg_path, output_image_path)
-            elif garment_type == 'upper_body':
-                output_path, message = overlay_cloth_on_model(model_image_path, clothes_no_bg_path, output_image_path)
-            else:
-                return jsonify({'error': 'Invalid garment type'})
+        # Remove background from clothes image
+        if not remove_background(clothes_image_path, clothes_no_bg_path):
+            return jsonify({'error': 'Background removal failed'}), 500
 
-            if output_path:
-                with open(output_image_path, "rb") as img_file:
-                    img_data = base64.b64encode(img_file.read()).decode('utf-8')
-                return render_template('result.html', img_data=img_data)
-            else:
-                return jsonify({'error': message})
+        # Perform the overlay based on garment type
+        if garment_type == 'lower_body':
+            output_path, message = overlay_lower_body_garment(model_image_path, clothes_no_bg_path, output_image_path)
+        elif garment_type == 'upper_body':
+            output_path, message = overlay_cloth_on_model(model_image_path, clothes_no_bg_path, output_image_path)
+        else:
+            return jsonify({'error': 'Invalid garment type'}), 400
 
+        if output_path:
+            with open(output_image_path, "rb") as img_file:
+                img_data = base64.b64encode(img_file.read()).decode('utf-8')
+            return render_template('result.html', img_data=img_data)
+        else:
+            return jsonify({'error': message}), 500
+
+    # GET request handling
+    garment_path = request.args.get('garment')
+    
+    # If coming from Try On button with a garment preselected
+    if garment_path:
+        # Verify the garment exists
+        if not os.path.exists(garment_path):
+            return "Selected garment not found", 404
+            
+        # Determine garment type based on filename or path (simple heuristic)
+        garment_type = 'upper_body'  # default
+        lower_body_keywords = ['pant', 'skirt', 'lower', 'jeans']
+        if any(keyword in garment_path.lower() for keyword in lower_body_keywords):
+            garment_type = 'lower_body'
+        
+        return render_template('upload.html', 
+                            preselected_garment=garment_path,
+                            garment_type=garment_type)
+    
+    # Regular GET request without preselected garment
     return render_template('upload.html')
-
 
 
 if __name__ == '__main__':
